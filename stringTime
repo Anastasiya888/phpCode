@@ -1,0 +1,28 @@
+<?php
+
+$handle = fopen ("php://stdin","r");
+fscanf($handle,"%s",$time);
+$AMResult = strpos($time, "AM");
+$PMResult = strpos($time, "PM");
+$rest = substr($time, 0, -8);
+$restString = substr($time, 2, -2);
+$newTimeHour="";
+if ($AMResult != false) {
+    if( intval($rest)==12){
+      $newTimeHour="00"; 
+    }
+    else{
+        $newTimeHour=$rest;
+    }
+}
+if ($PMResult != false) {
+   if( intval($rest)==12){
+      $newTimeHour="12"; 
+    }
+    else{
+        $newTimeHour=strval(intval($rest)+12);
+    }
+}
+
+echo  $newTimeHour.$restString;
+?>
