@@ -1,0 +1,31 @@
+<?php
+
+$handle = fopen ("php://stdin","r");
+fscanf($handle,"%d",$n);
+$a = array();
+for($a_i = 0; $a_i < $n; $a_i++) {
+   $a_temp = fgets($handle);
+   $a[] = explode(" ",$a_temp);
+  array_walk($a[$a_i],'intval');
+}
+
+$diagonalRight=0;
+$diagonalLeft=0;
+for($x = 0; $x < count($a); $x++) {
+  for($y = 0; $y < count($a); $y++) {
+     if($x==$y) {
+         $diagonalRight+=$a[$x][$y];
+     }
+  }
+}
+
+$y = count($a)-1;
+ while($y>=0){
+for($x = 0; $x < count($a); $x++) {
+    
+       $diagonalLeft+=$a[$x][$y];
+       $y--;
+    }
+}
+echo abs($diagonalRight - $diagonalLeft);
+?>
