@@ -1,0 +1,9 @@
+<?php
+
+$handle = fopen ("php://stdin","r");
+fscanf($handle,"%d",$n);
+$i= $n;
+
+while ($i--)
+    echo str_repeat(' ', $i).str_repeat('#', $n - $i)."\n";
+?>
