@@ -1,0 +1,367 @@
+
+<html>
+<head>
+	
+<script type="text/javascript" src="/com_tecnico/calendar/fteGenerate.js"></script>
+<style>
+.demo{
+	margin:20px auto 0;width:210px
+} 
+	a{text-decoration:none} 
+.ui-datepicker{
+	border: 0px;
+}
+
+.menu{
+	font-family:Arial;color:#515151;width:230px;position:relative;height:40px;text-align:left
+} 
+.menu li a{
+	color:#515151;display:block;padding:6px 15px;cursor:pointer;font-size:14px
+} 
+.menu li a:hover{
+	background:#ACCFE8;color:#3359CC
+} 
+.sub1{
+		background:#fff;position:absolute;top:28px;z-index:1;height:270px;width:190px;padding:10px 0 3px;border-radius:3px;box-shadow:0 2px 4px #ddd;border:1px solid #ddd;display:none
+	} 
+.sub3{
+		background:#fff;position:absolute;left:187px; top:1px; height:300px; width:720px;border-radius:3px;box-shadow:0 2px 4px #ddd;border:1px solid #ddd;display:none
+	} 	
+a.hover-link2{
+	width:230px;background:#fff;font-size:14px;color:#515151;position:absolute;display:block;padding:10px 0 1px 10px;height:28px;cursor:pointer;border-radius:5px 5px 0 0;font-weight:bold;border:1px solid #ddd
+	} 
+.sub-options{
+	list-style:none;margin:0px;padding:0px;font-size:11px
+	}
+li.daterange { 
+  
+  } 
+</style>
+<script type="text/javascript">
+$(document).ready(function () {
+
+var day=new Date();
+var data_tot=new Date();
+var from, to;            	
+var	avanti=1;
+var indietro=1;
+var scelta_fte;
+var prpr='';
+function padStr(i) {
+    return (i < 10) ? "0" + i : "" + i;
+}
+$.dateToString = function(dateObject) {
+    var d = new Date(dateObject);
+    var day = d.getDate();
+    var month = d.getMonth() + 1;
+    
+    var year = d.getFullYear();
+
+    var date = padStr(day)+"/"+padStr(month) + "/" +year;
+		return date;
+};
+$(".menu").hover(
+	function(){
+		$(".sub1").show();
+		$( "#to" ).datepicker({
+			dateFormat: 'dd/mm/yy',
+			beforeShowDay: $.datepicker.noWeekends, 
+			numberOfMonths: 1,
+			onSelect: function( selectedDate ) {
+				$( "#from" ).datepicker( "option", "maxDate", selectedDate );
+				$("#data_range").html('Dal: '+$("#from").val()+' Al: '+$("#to").val());
+			}
+		
+		});
+ 		$( "#from" ).datepicker({
+			 dateFormat: 'dd/mm/yy',
+			beforeShowDay: $.datepicker.noWeekends, 
+			numberOfMonths: 1,
+			onSelect: function( selectedDate ) {
+			
+				$( "#to" ).datepicker( "option", "minDate", selectedDate );
+				$("#data_range").html('Dal: '+$("#from").val()+' Al: '+$("#to").val());
+			
+			}
+		}); 
+		
+	 	$(".daterange").hover(
+			function(){
+				$(".sub3").show();
+				$("#to").css('display','block');
+				$("#from").css('display','block');
+				$("#cerca_totale").css('display','block');
+				$("#cerca_giorni").css('display','block');
+			},
+			 function(){$(".sub3").hide();
+			 });
+	 },
+	 
+	 function(){$(".sub1").hide();}
+);
+
+$("#autocom_fte").fcbkcomplete({
+	json_url: "calendar/class/switch_data.php?obg=autocomFteA",
+	cache: false,
+	width: 400,
+	filter_case: false,
+	filter_hide: true,
+	input_min_size: -1,
+	newel: true
+		
+});
+
+$("#cerca_totale").click(function() {
+	var fte=$("#autocom_fte").val();
+	
+	if($("#to").val()!=''&& $("#to").val()!=null&&$("#from").val()!=''&&$("#from").val()!=null)
+		{prpr=$("#contain_fte").drawFte($("#from").val(),$("#to").val(),'vista_fte',fte);
+		}
+		else
+		 alert("attenzione: inserisci due date");
+		
+});
+
+$("#cerca_giorni").click(function() {
+var fte=$("#autocom_fte").val();
+
+	if($("#from").val()!=''&& $("#from").val()!=null&&$("#to").val()!=''&&$("#to").val()!=null)
+		prpr=$("#contain_fte").drawFte($("#from").val(),$("#to").val(),'vista_suddiv',fte);
+		else
+		 alert("attenzione: inserisci due date");
+		
+});
+var lun;
+var ven;
+var oggi=$.dateToString(day);
+var week=new Date().getDay();
+switch (week)
+{
+case 0:
+	var d=new Date();
+	ven=$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() +5));
+	lun=$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() +1));
+  	break;
+case 1:
+    var d=new Date();
+	ven=$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() +4));
+	lun=$.dateToString(d);
+  	break;
+case 2:
+    var d=new Date();
+	ven=$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() +3));
+	lun=$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() -1));
+    break;
+case 3:
+	var d=new Date();
+	ven=$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() +2));
+	lun=$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() -2));
+	break;
+case 4:
+	var d=new Date();
+	ven=$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() +1));
+	lun=$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() -3));
+	break;
+case 5:
+	var d=new Date();
+	lun=$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() -4));
+	ven=$.dateToString(d);
+  break;
+case 6:
+  	var d=new Date();
+	ven=$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() +6));
+	lun=$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() +2));
+	break;
+} 
+
+prpr=$("#contain_fte").drawFte(oggi,oggi,'vista_fte','');  
+$("#oggi2").click(function() {
+	$("#data_range").html(oggi);
+	if($("#autocom_fte").val()!=null)
+	prpr=$("#contain_fte").drawFte(oggi,oggi,'vista_fte',$("#autocom_fte").val()); 
+	else
+	prpr=$("#contain_fte").drawFte(oggi,oggi,'vista_fte',''); 
+
+});
+$("#domani2").click(function() {
+	var d=new Date();
+	$("#data_range").html($.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() +1)));
+	prpr=$("#contain_fte").drawFte($.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() +1)),$.dateToString(new Date(d.getFullYear(), d.getMonth(), d.getDate() +1)),'vista_fte',''); 
+});
+$("#mese").click(function() {
+	$("#data_range").html(' Dal: '+$.dateToString(new Date(day.getFullYear(),day.getMonth(), 1))+' Al: '+$.dateToString(new Date(day.getFullYear(),day.getMonth()+1,0)));
+	if($("#autocom_fte").val()!=null)
+	prpr=$("#contain_fte").drawFte($.dateToString(new Date(day.getFullYear(),day.getMonth(), 1)),$.dateToString(new Date(day.getFullYear(),day.getMonth()+1,0)),'vista_fte',$("#autocom_fte").val()); 
+	else
+	prpr=$("#contain_fte").drawFte($.dateToString(new Date(day.getFullYear(),day.getMonth(), 1)),$.dateToString(new Date(day.getFullYear(),day.getMonth()+1,0)),'vista_fte',''); 
+
+
+});
+$("#set").click(function() {
+	$("#data_range").html(' Dal: '+lun+' Al: '+ven);
+	if($("#autocom_fte").val()!=null)
+	prpr=$("#contain_fte").drawFte(lun,ven,'vista_suddiv',$("#autocom_fte").val()); 
+	else
+	prpr=$("#contain_fte").drawFte(lun,ven,'vista_suddiv',''); 
+});
+$("#mes_suddiv").click(function() {
+	$("#data_range").html(' Dal: '+$.dateToString(new Date(day.getFullYear(),day.getMonth(), 1))+' Al: '+$.dateToString(new Date(day.getFullYear(),day.getMonth()+1,0)));
+	if($("#autocom_fte").val()!=null)
+	prpr=$("#contain_fte").drawFte($.dateToString(new Date(day.getFullYear(),day.getMonth(), 1)),$.dateToString(new Date(day.getFullYear(),day.getMonth()+1,0)),'vista_suddiv',$("#autocom_fte").val()); 
+	else
+	prpr=$("#contain_fte").drawFte($.dateToString(new Date(day.getFullYear(),day.getMonth(), 1)),$.dateToString(new Date(day.getFullYear(),day.getMonth()+1,0)),'vista_suddiv',''); 
+
+});
+$("#newGrid").jqGrid({
+		datatype: 'json',
+		postData: { obg:'tabella_ore',
+					data:'', 
+					fte:'',
+					ora:'',
+					stato:''},
+		height: 'auto',
+		width: 810,
+		colNames:['Nome','Cliente','Ticket','Stato','Tipologia','Data'], 
+		colModel:[
+		{name:'Nome', width:100},
+		{name:'Cliente', width:100},
+		{name:'Ticket',width:100},
+		{name:'Stato',width:60},
+		{name:'Tipologia',width:100},
+		{name:'Data',width:150}
+		], 
+		pager: '#pager2', 
+		loadComplete : function(data) {
+         $("#alertmod_newGrid").remove();
+   },
+		jsonReader: {
+		   repeatitems: false
+		},
+		rowNum:10,
+		caption:'Appuntamenti'
+		
+		});
+$( "#divDialog_fte" ).dialog({
+	title: 'Appuntamento',
+	height: 'auto',
+	width:820,
+    autoOpen: false,
+    modal: true,
+ 	open: function(){
+ 		var objPostData = {
+	     			obg:'tabella_ore',
+	     			fte:$(this).data('fte'),
+	     			ora:$(this).data('ora'),
+	     			data:$(this).data('data'),
+	     			stato:$(this).data('stato3')
+	     		} ;
+	  $("#newGrid").css('display','block');
+     	$("#newGrid").jqGrid("clearGridData", true)
+     		.setGridParam({
+     			url: "calendar/class/switch_data.php",
+	     		postData: objPostData
+     		})
+     		.trigger('reloadGrid');
+            $('.ui-widget-overlay').bind('click',function(){
+            	$("#newGrid").css('display','none');
+                $('#divDialog_fte').dialog('close');
+                
+          });
+        
+        },
+       
+   close : function(event, ui) {
+     
+        }
+       
+	});
+	
+	$("#reset_tutto").click(function() {
+			$("#data_range").html('Dal: '+oggi+' Al: '+oggi);
+			$( ".hasDatepicker" ).val(' ');
+			 $( "#from" ).datepicker( "option", "maxDate", '' );
+			 $( "#to" ).datepicker( "option", "minDate", '' );
+			prpr=$("#contain_fte").drawFte(oggi,oggi,'vista_fte','');  
+			$("#autocom_fte").each(function() {
+			    $(this).empty(); 
+				$(".bit-box").remove();
+			});		
+	});
+	$("#contain_fte").ready(function() {
+		$( "#top_fte" ).css('display','block');
+	});
+$("#reset_tutto").button({
+        icons: {
+            primary: "ui-icon-refresh"
+    }
+   });
+   $("#cerca_giorni").button({
+        icons: {
+            primary: "ui-icon-search"
+    }
+   });
+   
+     $("#cerca_totale").button({
+        icons: {
+            primary: "ui-icon-search"
+    }
+   });
+
+
+});
+  
+ </script>
+    
+</head>
+<body>
+	<?php
+	$data_oggi=date("d/m/Y");
+	$data_prima=date('01/m/Y');
+	$data_seconda=date('t/m/Y');
+	?>
+	<div id='top_fte' style="display: none">
+		<div id='l' style="float: left">
+		<div class='menu'style="float: left; margin-left: 10px">
+			 <a class='hover-link2' id='data_range'>Dal: <?php echo $data_oggi;?> Al: <?php echo $data_oggi;?></a>
+			 <div class='sub1'>
+				 <ul class='sub-options'>
+				 <li id='oggi2'><a href='#'>Oggi</a></li>
+				 <li id='domani2'><a href='#'>Domani</a></li>
+				 <li id='set'><a href='#'>Settimana vista giorni</a></li>
+				  <li id='mese'><a href='#'>Questo mese totale</a></li>
+				   <li id='mes_suddiv'><a href='#'>Questo mese vista giorni</a></li>
+				 <li  class="daterange"><a href='#'>Scegli Range
+				 	</a>
+			 <div class='sub3'>
+			 	<div id="from" name="from"style="float:left;margin-left: 5px; display:none"></div>
+			 	<div id="to" name="to" style=" float:left;margin-left:200px; display: none"></div>
+		<button id="cerca_giorni" style=" margin:10px;display: none;float:left; background-color:#F1CD17">Vista Giornaliera</button>
+		<button id="cerca_totale" style=" margin:10px; display: none;float:left; background-color:#F1CD17">Vista Totale</button>
+			 <ul class='sub-options'>
+			 </ul></div>
+			 </li>
+			 </ul>
+			 </div>
+		</div>
+			<label style="color: #000080;margin-right: 10px;margin-left: 5px" for="autocom_fte" >FTE</label>
+		</div>
+		<div id='a'style="float: left;">
+			<select id="autocom_fte" name="FTE" value="" class="ui-widget-content ui-corner-all" >
+			</select>
+		</div>
+		<br /><br />
+		<!--button id="cerca_giorni" style="margin-left: 10px; background-color:#F1CD17">Vista Giornaliera</button>
+		<button id="cerca_totale" style="margin-left: 10px; background-color:#F1CD17">Vista Totale</button-->
+		<button id="reset_tutto" style="margin-left: 10px;background-color:#A4CD39; ">Reset</button>
+		<br /><br />
+		
+<div id="contain_fte" style=""></div>
+<div id="container_fte" style=""></div>
+
+<div id="divDialog_fte" title="Basic dialog">
+	<table id="newGrid" style="display:none;" ></table>
+	<div id="pager2" style="display:none;"></div>
+	</div>
+	<iframe id='tabexcel' style="display:none;"></iframe>	
+</body>
+</html>
