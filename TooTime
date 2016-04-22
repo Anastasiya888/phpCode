@@ -1,0 +1,74 @@
+<?php
+$handle = fopen("php://stdin", "r");
+/* Enter your code here. Read input from STDIN. Print output to STDOUT */
+fscanf($handle,"%d",$t);
+  function permutat($stones, $output_length=1) {
+
+    $output = array();
+
+    if ($stones AND ($output_length > 0)) {
+     
+     if (is_array ($stones)) {
+       $stones_length = count ($stones);
+        $symbol = $stones;
+      } else {
+        return $output;
+      }
+
+      if ($stones_length < 2) return $output;
+
+      $pointer = array_fill (-1, $output_length+1, 0);
+      
+      $iterations = pow ($stones_length, $output_length);
+  
+      $stones_length--;
+      $output_length--;
+  
+      for ($i=0; $i < $iterations; $i++) {
+         $sumOfNumbers=0;
+        for ($c = 0; $c <= $output_length; $c++) {
+            $sumOfNumbers+=$symbol[$pointer[$c]];  
+        }
+        $output[] = $sumOfNumbers;
+ 
+        $c = $output_length;
+  
+        do {
+          $pointer[$c]++;
+          if ($pointer[$c] <= $stones_length) {
+            break;
+          } else {
+            $pointer[$c] = 0;
+            $c--;
+          }
+        } while (TRUE);
+      }
+    }
+    return array_unique($output);
+  }
+
+for($t0 = 0; $t0 < $t; $t0++){
+    $n=1; 
+    $a= $b=0;
+
+    for($a0 = 0; $a0 < 3; $a0++){
+
+        if($a0==0)  
+        $n= fscanf ($handle, "%d");
+        if($a0==1)  
+        $a= fscanf ($handle, "%d");
+        if($a0==2)  
+        $b= fscanf ($handle, "%d");
+
+    }
+
+        $numbers = array($a[0],$b[0]);
+        $num=$n[0]-1;
+        $totalArr= permutat ($numbers, $num );
+         foreach ($totalArr as $value) {
+            echo $value." ";
+        }
+        echo "\n";
+
+}
+?>
